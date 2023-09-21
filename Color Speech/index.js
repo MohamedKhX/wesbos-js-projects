@@ -3,10 +3,11 @@ import {cssColors, isColorDark, isValidColor} from "./data/colors.js";
 const container = document.querySelector('.container')
 
 window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
 function start() {
     const recognition =  new SpeechRecognition();
     recognition.continuous = true;
-    recognition.intermResults = true;
+    recognition.interimResults = true;
     recognition.onresult = handle;
     recognition.start()
 }
@@ -33,12 +34,14 @@ function spanHtml(color, colorName) {
 function handle( {results} ) {
     const words = results[results.length - 1][0].transcript;
     let color = words.toLowerCase();
-    color = color.replace('/\s/g', '');
+    color = color.replace(/\s|\./g, '');
+
     if(!isValidColor(color)) return;
 
-    const colorEl = document.querySelector(`.${colorName}`)
+    const colorEl = document.querySelector(`.${color}`)
     colorEl.classList.add('line-through', 'decoration-2', 'got');
-    document.body.style.backgroundColor = colorName;
+    document.body.style.backgroundColor = color;
 }
+
 start()
 renderColorsHtml()
